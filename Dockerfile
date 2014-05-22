@@ -4,50 +4,59 @@ FROM debian:wheezy
 # File Author / Maintainer
 MAINTAINER opensource.knihovna.cz
 
-################## BEGIN INSTALLATION ######################
-# Install ILS Koha with Czech language
-# Ref: http://opensource.knihovna.cz/wiki
+RUN echo "Version: 20140522"
 
-# Add the Koha repostitory to the sources list
-RUN echo deb http://debian.koha-community.org/koha squeeze main | sudo tee /etc/apt/sources.list.d/koha.list
+ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
+ENV DEBIAN_FRONTEND noninteractive
 
-# Add key
-RUN wget -O- http://debian.koha-community.org/koha/gpg.asc | sudo apt-key add -
+RUN apt-get -y update && apt-get -y install vim mc wget mysql-server; /etc/init.d/mysql stop
 
-# Update the repository sources list
-RUN apt-get update
+#ADD koha.list /etc/apt/sources.list.d/koha.list 
 
-# Upgrade Debian
-RUN apt-get upgrade
+#RUN wget -O- http://debian.koha-community.org/koha/gpg.asc | apt-key add -
+#RUN apt-get -y update && apt-get -y install koha-common 
 
-# Set Apache rewrite
-RUN a2enmod rewrite
-
-# Restart Apache
-RUN service apache2 restart
-
-# Install Koha package
-RUN apt-get install koha-common
-
-# Install MySQL server package
-RUN apt-get install mysql-server
+#RUN a2enmod rewrite
 
 
-# Create instance of Koha
-RUN koha-create --create-db knihovna
-
-# Install Czech language
-RUN koha-translate –-install cs-CZ
-
-
-
-##################### INSTALLATION END #####################
-# Expose the default port
-EXPOSE 27017
-
-# Default port to execute the entrypoint (MongoDB)
-CMD ["--port 27017"]
-
-# Set default container command
-ENTRYPOINT usr/bin/mongod
+#RUN /etc/init.d/mysql start; koha-create --create-db knihovna
+## Add key
+#RUN wget -O- http://debian.koha-community.org/koha/gpg.asc | sudo apt-key add -
+#
+## Update the repository sources list
+#RUN apt-get update
+#
+## Upgrade Debian
+#RUN apt-get upgrade
+#
+## Set Apache rewrite
+#RUN a2enmod rewrite
+#
+## Restart Apache
+#RUN service apache2 restart
+#
+## Install Koha package
+#RUN apt-get install koha-common
+#
+## Install MySQL server package
+#RUN apt-get install mysql-server
+#
+#
+## Create instance of Koha
+#RUN koha-create --create-db knihovna
+#
+## Install Czech language
+#RUN koha-translate –-install cs-CZ
+#
+#
+#
+###################### INSTALLATION END #####################
+## Expose the default port
+#EXPOSE 27017
+#
+## Default port to execute the entrypoint (MongoDB)
+#CMD ["--port 27017"]
+#
+## Set default container command
+#ENTRYPOINT usr/bin/mongod
 
